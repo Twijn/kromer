@@ -2,12 +2,14 @@
   "compilerOptions": {
     "target": "es2016",
     "module": "commonjs",
+    "declaration": true,  // Add this to generate .d.ts files
+    "outDir": "./dist",
+    "rootDir": "./src",   // Add this to specify source location
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true,
-    "outDir": "dist"
+    "skipLibCheck": true
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/*.test.ts"]
+  "exclude": ["node_modules", "**/*.test.ts", "dist"]
 }
