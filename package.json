@@ -1,0 +1,34 @@
+{
+  "name": "kromer",
+  "version": "1.0.0",
+  "description": "API Wrapper for Kromer, a fake currency built for Reconnected.CC",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/Twijn/kromer",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Twijn/kromer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Twijn/kromer/issues"
+  },
+  "keywords": ["kromer", "krist", "computercraft", "cctweaked"],
+  "author": "Twijn",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.0.5",
+    "jest-fetch-mock": "^3.0.3",
+    "ts-jest": "^29.4.0",
+    "typescript": "^5.5.3"
+  }
+}
