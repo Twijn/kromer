@@ -7,6 +7,7 @@ import type {
 	TransactionsResponse
 } from '../types';
 import type { KromerApi } from '../KromerApi';
+import {WSWebsocketInitResponse} from "../types/websockets";
 
 export abstract class BaseManager {
 	constructor(protected readonly api: KromerApi) {}
@@ -41,5 +42,13 @@ export abstract class BaseManager {
 	protected wrapNameResponse(response: NamesResponse): NamesResponse {
 		response.names = response.names.map((x) => this.wrapName(x));
 		return response;
+	}
+
+	protected async wsStart(privatekey?: string): Promise<WebSocket> {
+		const response = await this.api.post<WSWebsocketInitResponse>('ws/start', {
+			privatekey,
+		});
+
+		return new WebSocket(response.url);
 	}
 }

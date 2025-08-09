@@ -7,3 +7,4 @@ export * from './motd';
 export * from './name';
 export * from './pagination';
 export * from './transactions';
+export * from "./websockets";

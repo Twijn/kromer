@@ -2,11 +2,12 @@ import type {
 	MotdResponse,
 	LoginResponse,
 	APIResponse,
-	APIError
+	APIError, SubscriptionLevel
 } from './types';
 import AddressManager from './managers/AddressManager';
 import TransactionManager from './managers/TransactionManager';
 import NameManager from './managers/NameManager';
+import {WebSocketManager} from "./managers/WebSocketManager";
 
 export interface KromerApiOptions {
 	syncNode: string;
@@ -148,5 +149,13 @@ export class KromerApi {
 		const motd: MotdResponse = (await this.get('motd')) as MotdResponse;
 		motd.motd_set = new Date(motd.motd_set);
 		return motd;
+	}
+
+	public createWsClient(privatekey?: string, initialSubscriptions: SubscriptionLevel[] = []) {
+		return new WebSocketManager(
+			this,
+			privatekey,
+			initialSubscriptions
+		);
 	}
 }
