@@ -15,6 +15,9 @@
   "bugs": {
     "url": "https://github.com/Twijn/kromer/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "keywords": [
     "kromer",
     "krist",
@@ -28,6 +31,7 @@
     "build": "tsc",
     "clean": "rimraf dist",
     "test": "jest",
+    "test:ws": "npm run clean && npm run build && node dist/wsExample.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
