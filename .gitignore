@@ -12,3 +12,6 @@ yarn-error.log*
 .idea/
 
 dist/
+
+# MacOS BS
+.DS_Store
