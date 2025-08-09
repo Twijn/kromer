@@ -135,7 +135,7 @@ export class WebSocketManager extends WSEventEmitterManager {
                 this.socket.close();
             }
             this.socket = null;
-            setTimeout(this.connect, 3000);
+            setTimeout(() => this.connect(), 3000);
         }
     }
 
