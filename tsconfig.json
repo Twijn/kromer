@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2020",
+    "lib": ["ES2020", "DOM"],
     "module": "commonjs",
     "declaration": true,  // Add this to generate .d.ts files
     "outDir": "./dist",

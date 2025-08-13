@@ -12,6 +12,34 @@ const addressExample: Address = {
     firstseen: expect.any(Date),
 }
 
+type Pair = {
+    privateKey: string;
+    address: string;
+}
+
+const knownPairs: Pair[] = [
+    {
+        privateKey: "testing123",
+        address: "kyi3yx2nmi",
+    },
+    {
+        privateKey: "aea19064f1b383915510087358bfe1793365383f86da97fa233bb16c258551be",
+        address: "ksgkfvyu21",
+    },
+    {
+        privateKey: "76318a442d0fc09e7e8278741cc52fcaff642243cb251f6d3903efe851f905a3",
+        address: "kvdat7uygv",
+    },
+    {
+        privateKey: "d2ade874f471fc318f86db112b3c88ce06e569d5667272654e1995d9d9117142",
+        address: "kawbe84mje",
+    },
+    {
+        privateKey: "20b6bb317e3945f4470c1c69a612ea00245230f57f7666d666f4aa725d4deabf",
+        address: "k7wm83yr0p",
+    },
+];
+
 describe("AddressManager", () => {
 
     describe("get", () => {
@@ -84,5 +112,37 @@ describe("AddressManager", () => {
             expect(result.transactions).toBeDefined();
             expect(Array.isArray(result.transactions)).toBe(true);
         });
-    })
+    });
+
+    describe("decodeAddressFromPrivateKey", () => {
+        it("decodes a valid v2 address", () => {
+            const address = api.addresses.decodeAddressFromPrivateKey("my-private");
+            expect(address).toMatch(/^k[a-z0-9]{9}$/);
+        });
+
+        it("is deterministic for the same key", () => {
+            const address1 = api.addresses.decodeAddressFromPrivateKey("my-private");
+            const address2 = api.addresses.decodeAddressFromPrivateKey("my-private");
+            expect(address1).toBe(address2);
+        });
+
+        it("different keys produce different address", () => {
+            const  address1 = api.addresses.decodeAddressFromPrivateKey("my-private");
+            const address2 = api.addresses.decodeAddressFromPrivateKey("my-other-private");
+            expect(address1).not.toBe(address2);
+        });
+
+        knownPairs.forEach(({privateKey, address}) => {
+            it(`should return '${address}' from '${privateKey}`, () => {
+                const result = api.addresses.decodeAddressFromPrivateKey(privateKey);
+                expect(result).toBe(address);
+            });
+        });
+
+        it("should throw on empty strings", () => {
+            expect(
+                () => api.addresses.decodeAddressFromPrivateKey("")
+            ).toThrow()
+        });
+    });
 });

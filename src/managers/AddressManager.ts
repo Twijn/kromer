@@ -10,6 +10,7 @@ import type {
 } from '../types';
 
 import { BaseManager } from './BaseManager';
+import {decodeKristV2Address} from "../lib/v2Address";
 
 export default class AddressManager extends BaseManager {
 	/**
@@ -31,6 +32,18 @@ export default class AddressManager extends BaseManager {
 				ok: false,
 				error: 'invalid_format',
 				message: 'Must be either an address (ks0d5iqb6p) or a name (reconnected.kro)'
+			} as APIError;
+		}
+	}
+
+	public decodeAddressFromPrivateKey(privateKey: string): string {
+		try {
+			return decodeKristV2Address(privateKey);
+		} catch (e) {
+			throw {
+				ok: false,
+				error: "invalid_format",
+				message: e,
 			} as APIError;
 		}
 	}
