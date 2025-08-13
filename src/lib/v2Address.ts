@@ -1,7 +1,10 @@
-import { createHash } from "crypto";
+import {bytesToHex, utf8ToBytes} from "@noble/hashes/utils";
+import {sha256} from "@noble/hashes/sha2";
+
 
 function sha256Hex(input: string): string {
-    return createHash("sha256").update(input, "utf8").digest("hex");
+    const bytes = utf8ToBytes(input);
+    return bytesToHex(sha256(bytes));
 }
 
 function makeAddressByte(byteVal: number): string {
