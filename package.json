@@ -1,6 +1,6 @@
 {
   "name": "kromer",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "API Wrapper for Kromer, a fake currency built for Reconnected.CC",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
