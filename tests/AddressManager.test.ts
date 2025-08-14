@@ -98,6 +98,17 @@ describe("AddressManager", () => {
         });
     });
 
+    describe("getMultiple", () => {
+        it("should get multiple addresses", async () => {
+            const result = await api.addresses.getMultiple(["kkvft68wgz", "k6cxxi433w"]);
+            expect(result).toBeDefined();
+            expect(result).toHaveProperty("kkvft68wgz");
+            expect(result).toHaveProperty("k6cxxi433w");
+            expect(result["kkvft68wgz"]).toMatchObject<Address>(addressExample);
+            expect(result["k6cxxi433w"]).toMatchObject<Address>(addressExample);
+        });
+    });
+
     describe("getNames", () => {
         it("should get names owned by address", async () => {
             const result = await api.addresses.getNames("serverwelf");

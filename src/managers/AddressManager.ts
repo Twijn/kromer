@@ -1,6 +1,6 @@
 import type {
 	Address,
-	AddressesResponse,
+	AddressesResponse, AddressLookupResponse,
 	AddressQuery,
 	AddressResponse,
 	APIError,
@@ -68,6 +68,16 @@ export default class AddressManager extends BaseManager {
 	public async getRich(query: PaginatedQuery): Promise<AddressesResponse> {
 		const response = await this.api.get<AddressesResponse>('addresses/rich', query);
 		return this.wrapAddressResponse(response);
+	}
+
+	public async getMultiple(addresses: string[]): Promise<Record<string, Address>> {
+		const response = await this.api.get<AddressLookupResponse>("lookup/addresses/" + encodeURIComponent(addresses.join(",")));
+
+		for (const [key, value] of Object.entries(response.addresses)) {
+			response.addresses[key] = this.wrapAddress(value);
+		}
+
+		return response.addresses;
 	}
 
 	/**

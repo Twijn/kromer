@@ -20,3 +20,9 @@ export type AddressResponse = APIResponse & {
 export type AddressesResponse = Paginated & {
 	addresses: Address[];
 };
+
+export type AddressLookupResponse = APIResponse & {
+	found: number;
+	notFound: number;
+	addresses: Record<string, Address>;
+};
