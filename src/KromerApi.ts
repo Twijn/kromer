@@ -11,11 +11,13 @@ import {WebSocketManager} from "./managers/WebSocketManager";
 
 export interface KromerApiOptions {
 	syncNode: string;
+    requestTimeout: number;
 }
 
 export class KromerApi {
 	public readonly options: KromerApiOptions = {
-		syncNode: 'https://kromer.reconnected.cc/api/krist/'
+		syncNode: 'https://kromer.reconnected.cc/api/krist/',
+        requestTimeout: 10_000
 	};
 
 	private readonly addressManager: AddressManager;
@@ -69,19 +71,43 @@ export class KromerApi {
 	 */
 	private async fetch<T>(method: 'POST' | 'GET', uri: string, body: unknown = null): Promise<T> {
 		let response: Response;
-		if (method === 'POST') {
-			response = await fetch(this.options.syncNode + uri, {
-				method: 'POST',
-				body: JSON.stringify(body),
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-		} else {
-			response = await fetch(this.options.syncNode + uri);
-		}
+        try {
+            const fetchOptions: RequestInit = {
+                signal: AbortSignal.timeout(this.options.requestTimeout)
+            };
 
-		const data: unknown = await response.json();
+            if (method === 'POST') {
+                response = await fetch(this.options.syncNode + uri, {
+                    ...fetchOptions,
+                    method: 'POST',
+                    body: JSON.stringify(body),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+            } else {
+                response = await fetch(this.options.syncNode + uri, fetchOptions);
+            }
+        } catch (error) {
+            // Handle timeout errors
+            if (error instanceof Error && error.name === 'AbortError') {
+                throw {
+                    ok: false,
+                    error: 'request_timeout',
+                    message: 'Request timed out'
+                } as APIError;
+            }
+
+            // Re-throw other network errors as API errors
+            throw {
+                ok: false,
+                error: 'network_error',
+                message: error instanceof Error ? error.message : 'Network request failed'
+            } as APIError;
+        }
+
+
+        const data: unknown = await response.json();
 
 		if (!response.ok || !(data as APIResponse).ok) {
 			if (!(data as APIResponse).ok) {

@@ -7,7 +7,7 @@ import type {
 	TransactionsResponse
 } from '../types';
 import type { KromerApi } from '../KromerApi';
-import {WSWebsocketInitResponse} from "../types/websockets";
+import {WSWebsocketInitResponse} from "../types";
 
 export abstract class BaseManager {
 	constructor(protected readonly api: KromerApi) {}

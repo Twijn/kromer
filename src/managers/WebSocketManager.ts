@@ -140,8 +140,14 @@ export class WebSocketManager extends WSEventEmitterManager {
     }
 
     public async connect() {
-        this.socket = await this.wsStart(this.privatekey ?? undefined);
-        this.initializeSocket();
+        try {
+            this.socket = await this.wsStart(this.privatekey ?? undefined);
+            this.initializeSocket();
+        } catch(err) {
+            console.error("Failed to start websocket connection: ", err);
+            console.log("Attempting to reconnect in 10 seconds...");
+            setTimeout(() => this.connect(), 10000);
+        }
     }
 
     public async subscribe(event: SubscriptionLevel) {
