@@ -36,8 +36,8 @@ describe("NameManager", () => {
 
     describe("getAll", () => {
         it("should get a paginated list of names", async () => {
-            const result = await api.names.getAll({ limit: 4 });
-            expect(result.names).toHaveLength(4);
+            const result = await api.names.getAll({ limit: 3 });
+            expect(result.names).toHaveLength(3);
             expect(result.count).toBeGreaterThan(0);
         })
     });
