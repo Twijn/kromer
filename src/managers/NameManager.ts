@@ -1,12 +1,12 @@
 import { BaseManager } from './BaseManager';
 import type {
-	Name,
-	NameCheckResponse,
-	NameCostResponse,
-	NameResponse,
-	NamesResponse,
-	PaginatedQuery,
-	RegisterNameBody
+    Name,
+    NameCheckResponse,
+    NameCostResponse,
+    NameResponse,
+    NamesResponse,
+    PaginatedQuery,
+    RegisterNameBody, TransferNameBody, UpdateNameBody
 } from '../types';
 
 export default class NameManager extends BaseManager {
@@ -85,4 +85,16 @@ export default class NameManager extends BaseManager {
 		name = this.normalizeName(name);
 		await this.api.post<NameResponse>(`names/${name}`, body);
 	}
+
+    public async transfer(name: string, body: TransferNameBody): Promise<Name> {
+        name = this.normalizeName(name);
+        const response = await this.api.post<NameResponse>(`names/${name}/transfer`, body);
+        return this.wrapName(response.name);
+    }
+
+    public async update(name: string, body: UpdateNameBody): Promise<Name> {
+        name = this.normalizeName(name);
+        const response = await this.api.post<NameResponse>(`names/${name}/update`, body);
+        return this.wrapName(response.name);
+    }
 }

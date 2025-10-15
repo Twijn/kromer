@@ -5,6 +5,16 @@ export type RegisterNameBody = {
 	privatekey: string;
 };
 
+export type TransferNameBody = {
+    privatekey: string;
+    address: string;
+}
+
+export type UpdateNameBody = {
+    privatekey: string;
+    a?: string;
+}
+
 export type Name = {
 	name: string;
 	owner: string;
