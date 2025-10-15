@@ -86,12 +86,26 @@ export default class NameManager extends BaseManager {
 		await this.api.post<NameResponse>(`names/${name}`, body);
 	}
 
+    /**
+     * Transfers a name to another address
+     * @param name The name to transfer
+     * @param body Transfer name body
+     * @returns The transferred name
+     * @throws {APIError}
+     */
     public async transfer(name: string, body: TransferNameBody): Promise<Name> {
         name = this.normalizeName(name);
         const response = await this.api.post<NameResponse>(`names/${name}/transfer`, body);
         return this.wrapName(response.name);
     }
 
+    /**
+     * Updates a name
+     * @param name The name to update
+     * @param body Update name body
+     * @returns The updated name
+     * @throws {APIError}
+     */
     public async update(name: string, body: UpdateNameBody): Promise<Name> {
         name = this.normalizeName(name);
         const response = await this.api.post<NameResponse>(`names/${name}/update`, body);
