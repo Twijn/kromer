@@ -2,11 +2,11 @@ import {KromerApi} from "../src";
 import {Wallet, WalletCreateResponse} from "../src/types/external";
 
 const api = new KromerApi({
-    syncNode: "https://kromer.sad.ovh/api/krist/",
+    syncNode: "https://kromer.herrkatze.com/api/krist/",
     // internalSyncNode: "https://kromer.reconnected.cc/api/v1/",
 });
 
-const PRIVATE_KEY = "anndemeulemeester";
+const PRIVATE_KEY = "dQw4w9WgXcQ";
 
 const walletExample: Wallet = {
     id: expect.any(Number),

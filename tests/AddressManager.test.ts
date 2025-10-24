@@ -1,7 +1,7 @@
 import {Address, APIError, KromerApi} from "../src";
 
 const api = new KromerApi({
-    syncNode: "https://kromer.sad.ovh/api/krist/",
+    syncNode: "https://kromer.herrkatze.com/api/krist/",
 })
 
 const addressExample: Address = {
