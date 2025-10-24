@@ -226,6 +226,22 @@ export class KromerApi {
 		return motd;
 	}
 
+    /**
+     * Retrieves the current Kromer money supply
+     * @returns The current supply
+     * @throws {APIError}
+     */
+    public async getSupply(): Promise<number> {
+        const supplyResponse = await this.get<APIResponse & { money_supply: number }>('supply');
+        return supplyResponse.money_supply;
+    }
+
+    /**
+     * Creates a WebSocket client for real-time updates
+     * @param privatekey The private key to use for authentication
+     * @param initialSubscriptions The initial subscriptions to set up
+     * @returns The created WebSocket client
+     */
 	public createWsClient(privatekey?: string, initialSubscriptions: SubscriptionLevel[] = []) {
 		return new WebSocketManager(
 			this,
