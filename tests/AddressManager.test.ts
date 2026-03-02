@@ -56,7 +56,7 @@ describe("AddressManager", () => {
             ).rejects.toMatchObject<APIError>({
                 ok: false,
                 error: "address_not_found",
-                message: "Address invalid not found",
+                message: "The address could not be found",
             });
         });
     });

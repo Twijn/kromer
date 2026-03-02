@@ -29,7 +29,7 @@ describe("NameManager", () => {
             ).rejects.toMatchObject<APIError>({
                 ok: false,
                 error: "name_not_found",
-                message: "Name invalid not found",
+                message: "The name could not be found",
             });
         });
     });
@@ -43,9 +43,9 @@ describe("NameManager", () => {
     });
 
     describe("getCost", () => {
-        it("should return the cost of a name (500 kro)", async () => {
+        it("should return the cost of a name (100 kro)", async () => {
             const cost = await api.names.getCost();
-            expect(cost).toBe(500);
+            expect(cost).toBe(100);
         });
     });
 

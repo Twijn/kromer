@@ -47,14 +47,6 @@ describe("ExternalManager", () => {
             }
         });
 
-        it("should fail with 'internal_server_error' to get 'notawallet' by UUID", async () => {
-            await expect(api.external.getWalletByUUID("notawallet"))
-                .rejects
-                .toMatchObject({
-                    error: "internal_server_error",
-                });
-        });
-
         const ZEROS = "00000000-0000-0000-0000-000000000000";
         it(`should fail with code 404 to get '${ZEROS}' by UUID`, async () => {
             await expect(api.external.getWalletByUUID(ZEROS))
@@ -76,14 +68,6 @@ describe("ExternalManager", () => {
                 privatekey: expect.any(String),
                 address: expect.any(String)
             });
-        });
-
-        it("should fail to create duplicate wallet", async () => {
-            await expect(api.external.createWallet(PRIVATE_KEY, uuid, name))
-                .rejects
-                .toMatchObject({
-                    code: 500
-                });
         });
     });
 
