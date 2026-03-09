@@ -1,10 +1,11 @@
-import {Address, APIError, KromerApi} from "../src";
+import {Address, APIError, KromerApi, Name} from "../src";
+import { nameExample } from "./NameManager.test";
 
 const api = new KromerApi({
     syncNode: "https://kromer.herrkatze.com/api/krist/",
 })
 
-const addressExample: Address = {
+export const addressExample: Address = {
     address: expect.any(String),
     balance: expect.any(Number),
     totalin: expect.any(Number),
@@ -69,6 +70,13 @@ describe("AddressManager", () => {
             expect(address).toMatchObject<Address>(addressExample);
         });
 
+        it("should resolve kromer name", async () => {
+            const address = await api.addresses.resolve("reconnected.kro");
+
+            expect(address).toBeDefined()
+            expect(address).toMatchObject<Address>(addressExample);
+        })
+
         it("should reject invalid input", async () => {
             await expect(
                 api.addresses.resolve("invalid")
@@ -98,12 +106,16 @@ describe("AddressManager", () => {
         });
     });
 
-    describe("getMultiple", () => {
+    describe("lookupAddresses", () => {
         it("should get multiple addresses", async () => {
-            const result = await api.addresses.getMultiple(["serverwelf"]);
+            const result = await api.addresses.lookupAddresses([
+                "serverwelf",
+                ...knownPairs.map(p => p.address)
+            ]);
             expect(result).toBeDefined();
-            expect(result).toHaveProperty("serverwelf");
-            expect(result["serverwelf"]).toMatchObject<Address>(addressExample);
+            expect(result.notFound + result.found).toBe(knownPairs.length + 1);
+            expect(result.addresses).toHaveProperty("serverwelf");
+            expect(result.addresses["serverwelf"]).toMatchObject<Address>(addressExample);
         });
     });
 
@@ -112,6 +124,8 @@ describe("AddressManager", () => {
             const result = await api.addresses.getNames("serverwelf");
             expect(result.names).toBeDefined();
             expect(Array.isArray(result.names)).toBe(true);
+            expect(result.names.length).toBeGreaterThan(0);
+            expect(result.names[0]).toMatchObject<Name>(nameExample);
         });
     });
 

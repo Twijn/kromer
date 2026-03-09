@@ -11,6 +11,7 @@ import type {
 
 import { BaseManager } from './BaseManager';
 import {decodeKristV2Address} from "../lib/v2Address";
+import { NameLookupQuery } from '../types/lookup';
 
 export default class AddressManager extends BaseManager {
 	/**
@@ -70,13 +71,30 @@ export default class AddressManager extends BaseManager {
 		return this.wrapAddressResponse(response);
 	}
 
-	public async getMultiple(addresses: string[]): Promise<Record<string, Address>> {
-		const response = await this.api.get<AddressLookupResponse>("lookup/addresses/" + encodeURIComponent(addresses.join(",")));
+	/**
+	 * 
+	 * @param addresses The addresses to lookup
+	 * @param fetchNames Whether to also fetch the name count for the addresses
+	 * @returns The lookup result
+	 */
+	public async lookupAddresses(addresses: string[], fetchNames?: boolean): Promise<AddressLookupResponse> {
+		const response = await this.api.get<AddressLookupResponse>(
+			"lookup/addresses/" + encodeURIComponent(addresses.join(",")), {
+			fetchNames
+		});
 
 		for (const [key, value] of Object.entries(response.addresses)) {
 			response.addresses[key] = this.wrapAddress(value);
 		}
 
+		return response;
+	}
+
+	/**
+	 * @deprecated Use {@link lookupAddresses} instead
+	 */
+	public async getMultiple(addresses: string[]): Promise<Record<string, Address>> {
+		const response = await this.lookupAddresses(addresses, false);
 		return response.addresses;
 	}
 

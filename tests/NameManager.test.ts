@@ -1,10 +1,11 @@
-import {APIError, KromerApi, Name} from "../src";
+import {APIError, KromerApi, Name, Transaction} from "../src";
+import { transactionExample } from "./TransactionManager.test";
 
 const api = new KromerApi({
     syncNode: "https://kromer.herrkatze.com/api/krist/",
 })
 
-const nameExample: Name = {
+export const nameExample: Name = {
     name: expect.any(String),
     owner: expect.any(String),
     original_owner: expect.any(String),
@@ -30,6 +31,54 @@ describe("NameManager", () => {
                 ok: false,
                 error: "name_not_found",
                 message: "The name could not be found",
+            });
+        });
+    });
+    
+    describe("lookupNames", () => {
+        it("should lookup names for multiple addresses", async () => {
+            const result = await api.names.lookupNames([
+                "serverwelf",
+                "k4wq6w8umr",
+            ]);
+            expect(result?.names).toBeDefined();
+            expect(Array.isArray(result.names)).toBe(true);
+            // check count vs lengths
+            expect(result.total).toBeGreaterThanOrEqual(result.count);
+            expect(result.names.length).toBe(result.count);
+            // check names
+            result.names.forEach((name) => {
+                expect(name).toMatchObject<Name>(nameExample);
+            });
+        });
+    });
+
+    describe("lookupNameHistory", () => {
+        it("should lookup name history for a name", async () => {
+            const result = await api.names.lookupNameHistory("balls");
+            expect(result?.transactions).toBeDefined();
+            expect(Array.isArray(result.transactions)).toBe(true);
+            // check count vs lengths
+            expect(result.total).toBeGreaterThanOrEqual(result.count);
+            expect(result.transactions.length).toBe(result.count);
+            // check transactions
+            result.transactions.forEach((transaction) => {
+                expect(transaction).toMatchObject<Partial<Transaction>>(transactionExample);
+            });
+        });
+    });
+
+    describe("lookupNameTransactions", () => {
+        it("should lookup name transactions for a name", async () => {
+            const result = await api.names.lookupNameTransactions("balls");
+            expect(result?.transactions).toBeDefined();
+            expect(Array.isArray(result.transactions)).toBe(true);
+            // check count vs lengths
+            expect(result.total).toBeGreaterThanOrEqual(result.count);
+            expect(result.transactions.length).toBe(result.count);
+            // check transactions
+            result.transactions.forEach((transaction) => {
+                expect(transaction).toMatchObject<Partial<Transaction>>(transactionExample);
             });
         });
     });

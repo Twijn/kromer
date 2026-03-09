@@ -6,8 +6,9 @@ import type {
     NameResponse,
     NamesResponse,
     PaginatedQuery,
-    RegisterNameBody, TransferNameBody, UpdateNameBody
+    RegisterNameBody, TransactionsResponse, TransferNameBody, UpdateNameBody
 } from '../types';
+import { NameLookupQuery, TransactionLookupQuery } from '../types/lookup';
 
 export default class NameManager extends BaseManager {
 	/**
@@ -51,6 +52,44 @@ export default class NameManager extends BaseManager {
 		name = this.normalizeName(name);
 		const response = await this.api.get<NameResponse>(`names/${name}`);
 		return this.wrapName(response.name);
+	}
+
+	/**
+	 * Retrieves the names multiple addresses own
+	 * @param addresses The addresses to search for
+	 * @param query Pagination options
+	 * @returns Found names
+	 * @throws {APIError}
+	 */
+	public async lookupNames(addresses?: string[], query?: NameLookupQuery): Promise<NamesResponse> {
+		const response = await this.api.get<NamesResponse>(`lookup/names/${encodeURIComponent(addresses?.join(",") || "")}`, query);
+		return this.wrapNameResponse(response);
+	}
+
+	/**
+	 * 
+	 * @param name The name to search for, with or without .kro
+	 * @param query 
+	 * @returns 
+	 */
+	public async lookupNameTransactions(name: string, query?: Omit<TransactionLookupQuery, "includeMined">): Promise<TransactionsResponse> {
+		name = this.normalizeName(name);
+		const response = await this.api.get<TransactionsResponse>(
+			`lookup/names/${name}/transactions`,
+			query
+		);
+		return this.wrapTransactionResponse(response);
+	}
+
+	/**
+	 * Retrieves the transaction history of a name
+	 * @param name The name to search for, with or without .kro
+	 * @returns The transaction history of the name (A record changes, transfers, etc)
+	 */
+	public async lookupNameHistory(name: string): Promise<TransactionsResponse> {
+		name = this.normalizeName(name);
+		const response = await this.api.get<TransactionsResponse>(`lookup/names/${name}/history`);
+		return this.wrapTransactionResponse(response);
 	}
 
 	/**

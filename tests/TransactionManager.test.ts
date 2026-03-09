@@ -4,7 +4,7 @@ const api = new KromerApi({
     syncNode: "https://kromer.herrkatze.com/api/krist/",
 })
 
-const transactionExample: Partial<Transaction> = {
+export const transactionExample: Partial<Transaction> = {
     type: expect.any(String),
     id: expect.any(Number),
     from: expect.any(String),
@@ -47,6 +47,26 @@ describe("TransactionManager", () => {
             const result = await api.transactions.getLatest({ limit: 4 });
             expect(result.transactions).toHaveLength(4);
             expect(result.count).toBeGreaterThan(0);
+        });
+    });
+
+    describe("lookupTransactions", () => {
+        it("should lookup all transactions", async () => {
+            const result = await api.transactions.lookupTransactions();
+            console.log(result);
+            expect(Array.isArray(result.transactions)).toBe(true);
+        })
+
+        it("should lookup transactions for a single address", async () => {
+            const result = await api.transactions.lookupTransactions(["serverwelf"]);
+            console.log(result);
+            expect(Array.isArray(result.transactions)).toBe(true);
+        });
+
+        it("should lookup transactions for multiple addresses", async () => {
+            const result = await api.transactions.lookupTransactions(["serverwelf", "k4wq6w8umr"]);
+            console.log(result);
+            expect(Array.isArray(result.transactions)).toBe(true);
         });
     });
 

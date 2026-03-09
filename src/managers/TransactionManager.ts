@@ -10,6 +10,7 @@ import type {
 	TransactionsResponse,
 	TransactionWithMeta
 } from '../types';
+import { TransactionLookupQuery } from '../types/lookup';
 
 export default class TransactionManager extends BaseManager {
 	/**
@@ -31,6 +32,20 @@ export default class TransactionManager extends BaseManager {
 	 */
 	public async getLatest(query?: TransactionQuery): Promise<TransactionsResponse> {
 		const response = await this.api.get<TransactionsResponse>('transactions/latest', query);
+		return this.wrapTransactionResponse(response);
+	}
+
+	/**
+	 * Looks up transactions for multiple addresses
+	 * @param addresses The addresses to lookup transactions for
+	 * @param query Transaction lookup query options
+	 * @returns Found transactions
+	 */
+	public async lookupTransactions(addresses?: string[], query?: TransactionLookupQuery): Promise<TransactionsResponse> {
+		const response = await this.api.get<TransactionsResponse>(
+			`lookup/transactions/${encodeURIComponent(addresses?.join(",") || "")}`,
+			query
+		);
 		return this.wrapTransactionResponse(response);
 	}
 
