@@ -2,6 +2,7 @@ export * from './address';
 export * from './APIError';
 export * from './APIResponse';
 export * from './login';
+export * from "./lookup";
 export * from './maketransaction';
 export * from './motd';
 export * from './name';
