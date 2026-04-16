@@ -84,11 +84,15 @@ export default class NameManager extends BaseManager {
 	/**
 	 * Retrieves the transaction history of a name
 	 * @param name The name to search for, with or without .kro
+	 * @param query Pagination query options
 	 * @returns The transaction history of the name (A record changes, transfers, etc)
 	 */
-	public async lookupNameHistory(name: string): Promise<TransactionsResponse> {
+	public async lookupNameHistory(name: string, query?: Omit<TransactionLookupQuery, "includeMined">): Promise<TransactionsResponse> {
 		name = this.normalizeName(name);
-		const response = await this.api.get<TransactionsResponse>(`lookup/names/${name}/history`);
+		const response = await this.api.get<TransactionsResponse>(
+			`lookup/names/${name}/history`,
+			query
+		);
 		return this.wrapTransactionResponse(response);
 	}
 
