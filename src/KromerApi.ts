@@ -9,6 +9,7 @@ import TransactionManager from './managers/TransactionManager';
 import NameManager from './managers/NameManager';
 import {WebSocketManager} from "./managers/WebSocketManager";
 import ExternalManager from "./managers/ExternalManager";
+import SubscriptionManager from './managers/SubscriptionManager';
 
 export interface KromerApiOptions {
 	syncNode: string;
@@ -26,6 +27,7 @@ export class KromerApi {
     private readonly externalManager: ExternalManager;
 	private readonly transactionManager: TransactionManager;
 	private readonly nameManager: NameManager;
+    private readonly subscriptionManager: SubscriptionManager;
 
 	constructor(options: Partial<KromerApiOptions> = {}) {
 		this.options = {
@@ -47,6 +49,7 @@ export class KromerApi {
         this.externalManager = new ExternalManager(this);
 		this.transactionManager = new TransactionManager(this);
 		this.nameManager = new NameManager(this);
+        this.subscriptionManager = new SubscriptionManager(this);
 	}
 
     /**
@@ -77,7 +80,14 @@ export class KromerApi {
 		return this.nameManager;
 	}
 
-    private async fetchRaw<T extends object>(method: 'POST' | 'GET', uri: string, body: unknown = null, syncNode?: string, headers?: Record<string, string>): Promise<T | APIError> {
+    /**
+     * Everything related to Kromer Subscriptions
+     */
+    public get subscriptions() {
+        return this.subscriptionManager;
+    }
+
+    private async fetchRaw<T extends object>(method: 'POST' | 'GET' | 'DELETE', uri: string, body: unknown = null, syncNode?: string, headers?: Record<string, string>): Promise<T | APIError> {
         let response: Response;
         try {
             const fetchOptions: RequestInit = {
@@ -148,7 +158,7 @@ export class KromerApi {
      * @returns The response
      * @throws {APIError}
      */
-    private async fetch<T extends APIResponse>(method: 'POST' | 'GET', uri: string, body: unknown = null, syncNode?: string, headers?: Record<string, string>): Promise<T> {
+    private async fetch<T extends APIResponse>(method: 'POST' | 'GET' | 'DELETE', uri: string, body: unknown = null, syncNode?: string, headers?: Record<string, string>): Promise<T> {
         const data: T | APIError = await this.fetchRaw(method, uri, body, syncNode, headers);
 
         if (!data.ok) {
@@ -201,6 +211,14 @@ export class KromerApi {
             return await this.fetchRaw<T>('POST', uri, body, syncNode, headers) as any;
         } else {
             return await this.fetch<T & APIResponse>('POST', uri, body, syncNode, headers) as any;
+        }
+    }
+
+    public async delete<T extends object, R = T extends APIResponse ? T : T | APIError>(uri: string, body: unknown, syncNode?: string, useRaw: boolean = false, headers?: Record<string, string>): Promise<typeof useRaw extends true ? T : R> {
+        if (useRaw) {
+            return await this.fetchRaw<T>('DELETE', uri, body, syncNode, headers) as any;
+        } else {
+            return await this.fetch<T & APIResponse>('DELETE', uri, body, syncNode, headers) as any;
         }
     }
 

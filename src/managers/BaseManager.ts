@@ -8,6 +8,7 @@ import type {
 } from '../types';
 import type { KromerApi } from '../KromerApi';
 import {WSWebsocketInitResponse} from "../types";
+import { Subscription } from '../types/subscriptions';
 
 export abstract class BaseManager {
 	constructor(protected readonly api: KromerApi) {}
@@ -42,6 +43,14 @@ export abstract class BaseManager {
 	protected wrapNameResponse(response: NamesResponse): NamesResponse {
 		response.names = response.names.map((x) => this.wrapName(x));
 		return response;
+	}
+
+	protected wrapSubscription(subscription: Subscription) {
+		return {
+			...subscription,
+			created: new Date(subscription.created),
+			nextPayment: subscription.nextPayment ? new Date(subscription.nextPayment) : null,
+		} as Subscription;
 	}
 
 	protected async wsStart(privatekey?: string): Promise<WebSocket> {
