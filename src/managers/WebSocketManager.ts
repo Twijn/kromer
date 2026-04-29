@@ -11,6 +11,7 @@ import {
     WSHelloResponse, WSKeepAliveResponse, WSLoginRequest,
     WSMeResponse,
     WSSubscribeUnsubscribeRequest,
+    WSSubscriptionEvent,
     WSValidSubscriptionLevelResponse
 } from "../types";
 import {WSEventEmitterManager} from "./WSEventEmitterManager";
@@ -102,6 +103,10 @@ export class WebSocketManager extends WSEventEmitterManager {
                             let transaction = data.transaction as TransactionWithMeta;
                             transaction.meta = this.api.transactions.parseMetadata(transaction);
                             this.fire("transaction", transaction);
+                        } else if (data.event === "subscription") {
+                            let subscriptionEvent = data as WSSubscriptionEvent;
+                            subscriptionEvent.nextPayment = subscriptionEvent.nextPayment ? new Date(subscriptionEvent.nextPayment) : undefined;
+                            this.fire("subscription", subscriptionEvent);
                         } else {
                             console.log(data);
                         }

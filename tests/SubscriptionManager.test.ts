@@ -1,5 +1,4 @@
-import { APIError, KromerApi } from "../src";
-import type { Subscription } from "../src/types/subscriptions";
+import { APIError, KromerApi, Subscription } from "../src";
 
 const api = new KromerApi({
 	syncNode: "https://kromer.herrkatze.com/api/krist/",

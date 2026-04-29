@@ -3,12 +3,12 @@ import type {
 	AddressesResponse,
 	Name,
 	NamesResponse,
+	Subscription,
 	Transaction,
 	TransactionsResponse
 } from '../types';
 import type { KromerApi } from '../KromerApi';
 import {WSWebsocketInitResponse} from "../types";
-import { Subscription } from '../types/subscriptions';
 
 export abstract class BaseManager {
 	constructor(protected readonly api: KromerApi) {}

@@ -1,6 +1,7 @@
 import {APIResponse} from "./APIResponse";
 import {MakeTransactionBody} from "./maketransaction";
 import {Address} from "./address";
+import { SubscriptionStatus } from "./subscriptions";
 
 export type SubscriptionLevel =
     "transactions"|"ownTransactions"|
@@ -103,4 +104,22 @@ export type WSHelloResponse = WebSocketResponse & {
 export type WSKeepAliveResponse = WebSocketResponse & {
     type: "keep_alive";
     server_time: string;
+}
+
+export type WebSocketEvent<T> = {
+    type: "event";
+    event: T;
+}
+
+export type WSSubscriptionEventAction = "subscribe"|"payment_success"|"payment_failed"|"contract_cancelled"|"contract_closed";
+
+export type WSSubscriptionEvent = WebSocketEvent<"subscription"> & {
+    action: WSSubscriptionEventAction;
+    status: SubscriptionStatus;
+    contractId: number;
+    subscriptionId?: number;
+    ownerAddress?: string;
+    subscriberAddress?: string;
+    reason?: string;
+    nextPayment?: Date;
 }

@@ -1,5 +1,5 @@
 import {BaseManager} from "./BaseManager";
-import {TransactionWithMeta, WSHelloResponse} from "../types";
+import {TransactionWithMeta, WSHelloResponse, WSSubscriptionEvent} from "../types";
 
 type WSEventMap = {
     keepalive: Date;
@@ -9,6 +9,7 @@ type WSEventMap = {
     close: CloseEvent;
     // Kromer events
     transaction: TransactionWithMeta;
+    subscription: WSSubscriptionEvent;
 }
 
 type WSEvent = keyof WSEventMap;

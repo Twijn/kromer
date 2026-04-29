@@ -1,4 +1,4 @@
-import { CreateSubscriptionBody, CreateSubscriptionResponse, ListSubscriptionRequest, ListSubscriptionsResponse, SubscribeResponse, Subscription, SubscriptionBaseResponse } from "../types/subscriptions";
+import { CreateSubscriptionBody, CreateSubscriptionResponse, ListSubscriptionRequest, ListSubscriptionsResponse, SubscribeResponse, Subscription, SubscriptionBaseResponse } from "../types";
 import { BaseManager } from "./BaseManager";
 
 export default class SubscriptionManager extends BaseManager {
