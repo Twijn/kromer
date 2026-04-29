@@ -27,7 +27,6 @@
   "author": "Twijn",
   "license": "MIT",
   "scripts": {
-    "publish": "npm run clean && npm run build && npm publish",
     "build": "tsc",
     "clean": "rimraf dist",
     "test": "jest",
