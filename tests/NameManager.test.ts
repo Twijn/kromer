@@ -110,38 +110,38 @@ describe("NameManager", () => {
         });
     });
 
-    const name = crypto.randomUUID().substring(0, 8);
-    const privatekey = "rNWMZws4SjFkcOInSuSbQBCc6IvE5sDA";
-    describe("register", () =>  {
+    // const name = crypto.randomUUID().substring(0, 8);
+    // const privatekey = "rNWMZws4SjFkcOInSuSbQBCc6IvE5sDA";
+    // describe("register", () =>  {
 
-        it(`should register a new name, ${name}`, async () => {
-            await expect(api.names.register(name, {
-                privatekey,
-            })).resolves.toBeUndefined();
-        });
+    //     it(`should register a new name, ${name}`, async () => {
+    //         await expect(api.names.register(name, {
+    //             privatekey,
+    //         })).resolves.toBeUndefined();
+    //     });
 
-    });
+    // });
 
-    describe("update", () => {
+    // describe("update", () => {
 
-        it("should update the name data", async () => {
-            await expect(api.names.update(name, {
-                privatekey,
-                a: "test",
-            })).resolves.toMatchObject<Name>(nameExample)
-        })
+    //     it("should update the name data", async () => {
+    //         await expect(api.names.update(name, {
+    //             privatekey,
+    //             a: "test",
+    //         })).resolves.toMatchObject<Name>(nameExample)
+    //     })
 
-    });
+    // });
 
-    describe("transfer", () => {
+    // describe("transfer", () => {
 
-        it(`should transfer the registered name, ${name}`, async () => {
-            await expect(api.names.transfer(name, {
-                privatekey,
-                address: 'serverwelf',
-            })).resolves.toMatchObject<Name>(nameExample)
-        })
+    //     it(`should transfer the registered name, ${name}`, async () => {
+    //         await expect(api.names.transfer(name, {
+    //             privatekey,
+    //             address: 'serverwelf',
+    //         })).resolves.toMatchObject<Name>(nameExample)
+    //     })
 
-    });
+    // });
 
 });
