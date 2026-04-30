@@ -131,10 +131,34 @@ export class KromerApi {
 
         const data = await response.json() as T|APIError;
 
-        if (!response.ok || !data) {
-            if ('error' in data && 'message' in data) {
-                return data as APIError;
+        if (data && typeof data === 'object' && 'error' in data) {
+            const errorValue = (data as { error?: unknown }).error;
+            const topLevelMessage = (data as { message?: unknown }).message;
+
+            if (typeof errorValue === 'string') {
+                return {
+                    ok: false,
+                    code: response.status,
+                    error: errorValue,
+                    message: typeof topLevelMessage === 'string' ? topLevelMessage : undefined,
+                } as APIError;
             }
+
+            if (errorValue && typeof errorValue === 'object') {
+                const nestedCode = (errorValue as { code?: unknown }).code;
+                const nestedMessage = (errorValue as { message?: unknown }).message;
+                if (typeof nestedCode === 'string') {
+                    return {
+                        ok: false,
+                        code: response.status,
+                        error: nestedCode,
+                        message: typeof nestedMessage === 'string' ? nestedMessage : undefined,
+                    } as APIError;
+                }
+            }
+        }
+
+        if (!response.ok || !data) {
             throw {
                 ok: false,
                 code: response.status,
@@ -190,7 +214,11 @@ export class KromerApi {
         }
 
         if (useRaw) {
-            return await this.fetchRaw<T>('GET', uri, null, syncNode, headers) as any;
+            const response = await this.fetchRaw<T>('GET', uri, null, syncNode, headers) as T | APIError;
+            if ('ok' in response && response.ok === false) {
+                throw response as APIError;
+            }
+            return response as any;
         } else {
             return await this.fetch<T & APIResponse>('GET', uri, null, syncNode, headers) as any;
         }
@@ -208,7 +236,11 @@ export class KromerApi {
      */
     public async post<T extends object, R = T extends APIResponse ? T : T | APIError>(uri: string, body: unknown, syncNode?: string, useRaw: boolean = false, headers?: Record<string, string>): Promise<typeof useRaw extends true ? T : R> {
         if (useRaw) {
-            return await this.fetchRaw<T>('POST', uri, body, syncNode, headers) as any;
+            const response = await this.fetchRaw<T>('POST', uri, body, syncNode, headers) as T | APIError;
+            if ('ok' in response && response.ok === false) {
+                throw response as APIError;
+            }
+            return response as any;
         } else {
             return await this.fetch<T & APIResponse>('POST', uri, body, syncNode, headers) as any;
         }
@@ -216,7 +248,11 @@ export class KromerApi {
 
     public async delete<T extends object, R = T extends APIResponse ? T : T | APIError>(uri: string, body: unknown, syncNode?: string, useRaw: boolean = false, headers?: Record<string, string>): Promise<typeof useRaw extends true ? T : R> {
         if (useRaw) {
-            return await this.fetchRaw<T>('DELETE', uri, body, syncNode, headers) as any;
+            const response = await this.fetchRaw<T>('DELETE', uri, body, syncNode, headers) as T | APIError;
+            if ('ok' in response && response.ok === false) {
+                throw response as APIError;
+            }
+            return response as any;
         } else {
             return await this.fetch<T & APIResponse>('DELETE', uri, body, syncNode, headers) as any;
         }
