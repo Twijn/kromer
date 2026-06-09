@@ -15,6 +15,7 @@ export interface KromerApiOptions {
 	syncNode: string;
     internalSyncNode?: string;
     requestTimeout: number;
+    fetchImpl?: (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 }
 
 export class KromerApi {
@@ -90,13 +91,22 @@ export class KromerApi {
     private async fetchRaw<T extends object>(method: 'POST' | 'GET' | 'DELETE', uri: string, body: unknown = null, syncNode?: string, headers?: Record<string, string>): Promise<T | APIError> {
         let response: Response;
         try {
+            const fetchImpl = this.options.fetchImpl ?? globalThis.fetch;
+            if (!fetchImpl) {
+                throw {
+                    ok: false,
+                    error: 'fetch_unavailable',
+                    message: 'No fetch implementation available. Provide options.fetchImpl when constructing KromerApi.'
+                } as APIError;
+            }
+
             const fetchOptions: RequestInit = {
                 signal: AbortSignal.timeout(this.options.requestTimeout)
             };
 
             const targetNode = syncNode ?? this.options.syncNode;
             if (method === 'POST') {
-                response = await fetch(targetNode + uri, {
+                response = await fetchImpl(targetNode + uri, {
                     ...fetchOptions,
                     method: 'POST',
                     body: JSON.stringify(body),
@@ -106,7 +116,7 @@ export class KromerApi {
                     }
                 });
             } else {
-                response = await fetch(targetNode + uri, {
+                response = await fetchImpl(targetNode + uri, {
                     ...fetchOptions,
                     headers
                 });
